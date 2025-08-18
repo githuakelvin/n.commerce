@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Available Coupons</h1>
+
+    <div class="row">
+        {% for coupon in coupons %}
+        <div class="col-md-4 mb-4">
+            <div class="card {% if coupon.is_valid %}border-success{% else %}border-secondary{% endif %}">
+                <div
+                    class="card-header {% if coupon.is_valid %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                    <h3>{{ coupon.code }}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ coupon.description }}</p>
+                    <p>
+                        <strong>Discount:</strong>
+                        {% if coupon.discount_type == 'percentage' %}
+                        {{ coupon.discount_value }}%
+                        {% if coupon.max_discount %}
+                        (up to ${{ coupon.max_discount }})
+                        {% endif %}
+                        {% else %}
+                        ${{ coupon.discount_value }}
+                        {% endif %}
+                    </p>
+                    <p><strong>Valid until:</strong> {{ coupon.valid_to|date:"M d, Y" }}</p>
+                    <a href="{% url 'coupon_detail' coupon.code %}" class="btn btn-outline-primary">Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No active coupons available at the moment.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

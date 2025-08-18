@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Return #{{ return.id }} Details{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">Return #{{ return.id }}</h2>
+                        <span class="badge {{ status_badges|get_item:return.status }} p-2">
+                            {{ return.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-muted mb-0 mt-2">
+                        For Order #<a href="{% url 'order_detail' pk=return.order.id %}">{{ return.order.id }}</a>
+                        - Requested on {{ return.request_date|date:"M d, Y" }}
+                    </p>
+                </div>
+
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-info-circle mr-2"></i>Return Details</h5>
+                            <dl class="row mt-3">
+                                <dt class="col-sm-5">Reason:</dt>
+                                <dd class="col-sm-7">{{ return.get_reason_display }}</dd>
+
+                                <dt class="col-sm-5">Refund Method:</dt>
+                                <dd class="col-sm-7">{{ return.get_preferred_refund_method_display }}</dd>
+
+                                {% if return.status == 'PROCESSED' %}
+                                <dt class="col-sm-5">Refund Date:</dt>
+                                <dd class="col-sm-7">{{ return.resolution_date|date:"M d, Y" }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-clipboard-list mr-2"></i>Items to Return</h5>
+                            <ul class="mt-3 pl-3">
+                                {% for item in return.order.items.all %}
+                                <li>{{ item.product.name }} (Qty: {{ item.quantity }})</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if return.notes %}
+                    <div class="alert alert-light">
+                        <h5 class="alert-heading">Your Notes</h5>
+                        <p>{{ return.notes }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if return.status == 'APPROVED' %}
+                    <div class="alert alert-success">
+                        <h5 class="alert-heading"><i class="fas fa-check-circle mr-2"></i>Return Approved</h5>
+                        <p>Please ship your return to:</p>
+                        <address class="mb-0">
+                            Kenya Commerce Returns<br>
+                            123 Return Street<br>
+                            Nairobi, Kenya<br>
+                            Phone: +254 700 123 456
+                        </address>
+                        <p class="mt-2 mb-0">Include this return ID: <strong>RET-{{ return.id }}</strong></p>
+                    </div>
+                    {% elif return.status == 'REJECTED' and return.admin_notes %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading"><i class="fas fa-times-circle mr-2"></i>Return Rejected</h5>
+                        <p>{{ return.admin_notes }}</p>
+                    </div>
+                    {% elif return.status == 'PROCESSED' %}
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading"><i class="fas fa-check-double mr-2"></i>Refund Processed</h5>
+                        <p class="mb-0">
+                            Your refund of <strong>KSh {{ return.order.get_total }}</strong> has been processed via
+                            {{ return.get_preferred_refund_method_display }}.
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'return_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Returns
+                        </a>
+                        {% if return.status == 'PENDING' %}
+                        <a href="#" class="btn btn-outline-danger" data-toggle="modal" data-target="#cancelReturnModal">
+                            <i class="fas fa-times mr-2"></i> Cancel Request
+                        </a>
+                        {% endif %}
+                        <div class="mt-4">
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#cancelReturnModal">
+                                <i class="fas fa-times mr-2"></i> Cancel Return Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Return Modal -->
+<div class="modal fade" id="cancelReturnModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Cancel Return Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this return request?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form method="post" action="{% url 'cancel_return' pk=return.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

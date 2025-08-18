@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Delivery Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Delivery Dashboard</h2>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    Pending Deliveries ({{ orders_count }})
+                </div>
+                <div class="card-body">
+                    {% if pending_orders %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Customer</th>
+                                    <th>Destination</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in pending_orders %}
+                                <tr>
+                                    <td>{{ order.order_number }}</td>
+                                    <td>{{ order.customer_name }}</td>
+                                    <td>{{ order.billing_city }}</td>
+                                    <td>
+                                        <a href="{% url 'delivery:track_delivery' order.tracking_number %}"
+                                            class="btn btn-sm btn-info">
+                                            Track
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p>No pending deliveries</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Recently Delivered
+                </div>
+                <div class="card-body">
+                    {% if recent_deliveries %}
+                    <ul class="list-group">
+                        {% for order in recent_deliveries %}
+                        <li class="list-group-item">
+                            {{ order.order_number }} - {{ order.customer_name }}
+                            <span class="badge bg-success float-end">
+                                {{ order.delivery_date|date:"M d" }}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No recent deliveries</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

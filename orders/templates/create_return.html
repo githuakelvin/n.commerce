@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Return - Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h2 class="mb-0">Request Return</h2>
+                    <p class="text-muted mb-0">Order #{{ order.id }} - Delivered on {{ order.delivery_date|date:"M d, Y"
+                        }}</p>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Reason for Return</label>
+                            {{ form.reason }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Additional Notes</label>
+                            {{ form.notes }}
+                            <small class="form-text text-muted">
+                                Please describe any issues or provide details about your return
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-weight-bold">Preferred Refund Method</label>
+                            {{ form.preferred_refund_method }}
+                        </div>
+
+                        <div class="alert alert-info mt-4">
+                            <h5 class="alert-heading">Return Policy</h5>
+                            <ul class="mb-0 pl-3">
+                                <li>Items must be returned within 14 days of delivery</li>
+                                <li>Original tags and packaging must be intact</li>
+                                <li>Refunds will be processed within 5 business days after we receive the items</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'order_detail' pk=order.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left mr-2"></i> Back to Order
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane mr-2"></i> Submit Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

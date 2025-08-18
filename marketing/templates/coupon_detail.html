@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card {% if is_valid %}border-success{% else %}border-secondary{% endif %}">
+                <div
+                    class="card-header {% if is_valid %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                    <h2 class="mb-0">Coupon: {{ coupon.code }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ coupon.description }}</p>
+
+                    <div class="coupon-details mb-4">
+                        <h4>Details:</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Discount:</strong>
+                                {% if coupon.discount_type == 'percentage' %}
+                                {{ coupon.discount_value }}%
+                                {% if coupon.max_discount %}
+                                (max ${{ coupon.max_discount }})
+                                {% endif %}
+                                {% else %}
+                                ${{ coupon.discount_value }}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Minimum Order:</strong>
+                                {% if coupon.min_order_amount %}
+                                ${{ coupon.min_order_amount }}
+                                {% else %}
+                                None
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Valid:</strong>
+                                {{ coupon.valid_from|date:"M d, Y" }} to {{ coupon.valid_to|date:"M d, Y" }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Status:</strong>
+                                {% if is_valid %}
+                                <span class="text-success">Active</span>
+                                {% else %}
+                                <span class="text-danger">Expired</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+
+                    {% if is_valid %}
+                    <div class="alert alert-success">
+                        This coupon is valid and can be applied at checkout.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger">
+                        This coupon is no longer valid.
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'coupon_list' %}" class="btn btn-primary">Back to All Coupons</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

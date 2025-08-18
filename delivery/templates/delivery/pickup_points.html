@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Pickup Points{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        {% for point in pickup_points %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h4>{{ point.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><i class="fas fa-map-marker-alt"></i> {{ point.get_full_address }}</p>
+                    <p><i class="fas fa-phone"></i> {{ point.phone|default:"Not provided" }}</p>
+                    <p><i class="fas fa-envelope"></i> {{ point.email|default:"Not provided" }}</p>
+                    <hr>
+                    <h5>Opening Hours</h5>
+                    <p>{{ point.opening_hours }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">View on Map</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No pickup points available
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

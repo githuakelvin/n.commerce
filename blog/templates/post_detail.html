@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <article>
+                <h1 class="mb-3">{{ post.title }}</h1>
+
+                <p class="text-muted">
+                    Published {{ post.publish_date|timesince }} ago by {{ post.author }} |
+                    Category: <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a> |
+                    Views: {{ post.views }}
+                </p>
+
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" class="img-fluid rounded mb-4" alt="{{ post.title }}">
+                {% endif %}
+
+                <div class="post-content">
+                    {{ post.content|linebreaks }}
+                </div>
+
+                <div class="mt-4 mb-4">
+                    <p class="text-muted">Tags:
+                        {% for tag in post.tags.all %}
+                        <a href="{% url 'blog_tag' tag.slug %}" class="badge bg-secondary">{{ tag.name }}</a>
+                        {% endfor %}
+                    </p>
+                </div>
+            </article>
+
+            <!-- Similar Posts -->
+            {% if similar_posts %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>You might also like</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for post in similar_posts %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Comments -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Comments ({{ comments.count }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for comment in comments %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ comment.name }}</strong>
+                            <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                        </div>
+                        <p>{{ comment.content }}</p>
+                        <hr>
+                    </div>
+                    {% empty %}
+                    <p>No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Comment Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Leave a comment</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            {% include 'blog/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

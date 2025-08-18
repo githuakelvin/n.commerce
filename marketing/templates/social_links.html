@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Connect With Us</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="mb-4">Follow us on social media</h3>
+
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for link in links %}
+                        <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-outline-primary m-2 social-icon">
+                            <i class="fab {{ link.platform|social_icon }} fa-lg"></i>
+                            <span class="ms-2">{{ link.get_platform_display() }}</span>
+                        </a>
+                        {% empty %}
+                        <div class="alert alert-info">No social media links available at the moment.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .social-icon {
+        min-width: 150px;
+        text-align: left;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Platform-specific colors */
+    .social-icon[href*="facebook.com"] {
+        border-color: #3b5998;
+        color: #3b5998;
+    }
+
+    .social-icon[href*="facebook.com"]:hover {
+        background-color: #3b5998;
+        color: white;
+    }
+
+    .social-icon[href*="twitter.com"] {
+        border-color: #1DA1F2;
+        color: #1DA1F2;
+    }
+
+    .social-icon[href*="twitter.com"]:hover {
+        background-color: #1DA1F2;
+        color: white;
+    }
+
+    .social-icon[href*="instagram.com"] {
+        border-color: #E1306C;
+        color: #E1306C;
+    }
+
+    .social-icon[href*="instagram.com"]:hover {
+        background-color: #E1306C;
+        color: white;
+    }
+
+    .social-icon[href*="linkedin.com"] {
+        border-color: #0077B5;
+        color: #0077B5;
+    }
+
+    .social-icon[href*="linkedin.com"]:hover {
+        background-color: #0077B5;
+        color: white;
+    }
+
+    .social-icon[href*="youtube.com"] {
+        border-color: #FF0000;
+        color: #FF0000;
+    }
+
+    .social-icon[href*="youtube.com"]:hover {
+        background-color: #FF0000;
+        color: white;
+    }
+
+    .social-icon[href*="pinterest.com"] {
+        border-color: #BD081C;
+        color: #BD081C;
+    }
+
+    .social-icon[href*="pinterest.com"]:hover {
+        background-color: #BD081C;
+        color: white;
+    }
+
+    .social-icon[href*="tiktok.com"] {
+        border-color: #010101;
+        color: #010101;
+    }
+
+    .social-icon[href*="tiktok.com"]:hover {
+        background-color: #010101;
+        color: white;
+    }
+</style>
+{% endblock %}

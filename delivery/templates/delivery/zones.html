@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Shipping Zones{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Shipping Zones</h3>
+        </div>
+        <div class="card-body">
+            {% if zones %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Counties</th>
+                            <th>Base Cost</th>
+                            <th>Delivery Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for zone in zones %}
+                        <tr>
+                            <td>{{ zone.name }}</td>
+                            <td>{{ zone.counties|join:", " }}</td>
+                            <td>KSh {{ zone.base_shipping_cost }}</td>
+                            <td>{{ zone.estimated_days }} days</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No shipping zones available</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

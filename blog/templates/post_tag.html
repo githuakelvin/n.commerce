@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Posts tagged with {{ tag }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">Posts tagged with: {{ tag }}</h1>
+
+            {% if posts %}
+            {% for post in posts %}
+            <div class="card mb-4">
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text text-muted">
+                        Published {{ post.publish_date|timesince }} ago by {{ post.author }} |
+                        Category: <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a>
+                    </p>
+                    <p class="card-text">{{ post.excerpt }}</p>
+                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary">Read More →</a>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination (same as post_list.html) -->
+            {% include 'blog/pagination.html' %}
+            {% else %}
+            <div class="alert alert-info">No posts found with this tag.</div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            {% include 'blog/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">Search Results</h1>
+
+            <form method="get" action="{% url 'blog_search' %}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="query" class="form-control" value="{{ query }}"
+                        placeholder="Search posts...">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </form>
+
+            {% if query %}
+            {% if results %}
+            <p class="text-muted mb-4">Found {{ results.count }} result(s) for "{{ query }}"</p>
+
+            {% for post in results %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    </h2>
+                    <p class="card-text text-muted">
+                        Published {{ post.publish_date|timesince }} ago by {{ post.author }} |
+                        Category: <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a>
+                    </p>
+                    <p class="card-text">{{ post.excerpt }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info">No results found for "{{ query }}"</div>
+            {% endif %}
+            {% else %}
+            <div class="alert alert-warning">Please enter a search term</div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            {% include 'blog/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
